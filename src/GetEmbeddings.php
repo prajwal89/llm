@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Prajwal89\Llm;
 
 use Illuminate\Database\Eloquent\Model;
-use Modules\Qdrant\Enums\EmbeddingUseCase;
 use Prajwal89\Llm\Dtos\EmbeddingResponseDto;
 use Prajwal89\Llm\Enums\EmbeddingModelEnum;
 use Prajwal89\Llm\Enums\EmbeddingModelFamilyEnum;
