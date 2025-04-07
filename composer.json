@@ -1,0 +1,24 @@
+{
+    "name": "prajwal89/llm",
+    "description": "Llm interface for laravel with filament admin panel",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Prajwal89\\Llm\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Prajwal89\\Llm\\LlmServiceProvider"
+            ]
+        }
+    },
+    "require-dev": {
+        "laravel/pint": "^1.21"
+    },
+    "require": {
+        "malzariey/filament-daterangepicker-filter": "^3.3"
+    }
+}
