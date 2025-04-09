@@ -13,7 +13,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
-use Prajwal89\Llm\Enums\LlmModelEnum;
 use Prajwal89\Llm\Filament\Resources\EmbeddingResource\Pages;
 use Prajwal89\Llm\Filament\Resources\EmbeddingResource\Pages\ListEmbeddings;
 use Prajwal89\Llm\Filament\Resources\EmbeddingResource\Widgets\EmbeddingTrendChart;
@@ -61,7 +60,14 @@ class EmbeddingResource extends Resource
                             });
                     }),
                 SelectFilter::make('model_name')
-                    ->options(LlmModelEnum::class),
+                    ->options(function () {
+                        return Embedding::query()
+                            ->distinct('model_name')
+                            ->pluck('model_name')
+                            ->mapWithKeys(function ($model_name) {
+                                return [$model_name => $model_name];
+                            });
+                    }),
                 DateRangeFilter::make('created_at'),
             ])
             ->actions([

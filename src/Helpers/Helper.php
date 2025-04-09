@@ -7,7 +7,6 @@ namespace Prajwal89\Llm\Helpers;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use Prajwal89\Llm\Enums\LlmModelEnum;
 
 class Helper
 {
@@ -71,8 +70,8 @@ class Helper
     public static function llmUsageHash(
         ?string $systemPrompt,
         array $messages, // user messages
-        LlmModelEnum $model
+        string $modelName
     ): string {
-        return md5($systemPrompt . json_encode($messages) . $model->value);
+        return md5($systemPrompt . json_encode($messages) . $modelName);
     }
 }

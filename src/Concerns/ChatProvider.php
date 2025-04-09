@@ -6,7 +6,7 @@ namespace Prajwal89\Llm\Concerns;
 
 use Prajwal89\Llm\Dtos\LlmResponseDto;
 
-interface ChatStrategyInterface
+interface ChatProvider
 {
     public function makeRequest(): LlmResponseDto;
 }

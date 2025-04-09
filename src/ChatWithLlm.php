@@ -9,17 +9,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
-use Prajwal89\Llm\Concerns\ChatStrategyInterface;
+use Prajwal89\Llm\Concerns\ChatProvider;
 use Prajwal89\Llm\Dtos\LlmResponseDto;
 use Prajwal89\Llm\Dtos\MessageDto;
-use Prajwal89\Llm\Enums\LlmModelEnum;
-use Prajwal89\Llm\Enums\LlmProvider;
 use Prajwal89\Llm\Helpers\Helper;
 use Prajwal89\Llm\Models\LlmUsage;
 use Prajwal89\Llm\Strategies\Chat\Anthropic;
 use Prajwal89\Llm\Strategies\Chat\Deepseek;
 use Prajwal89\Llm\Strategies\Chat\Google;
-use Prajwal89\Llm\Strategies\Chat\Meta;
 use Prajwal89\Llm\Strategies\Chat\OpenAI;
 use Psr\Log\LoggerInterface;
 
@@ -42,10 +39,11 @@ class ChatWithLlm
     public ?LlmUsage $llmUsage = null;
 
     public function __construct(
-        public LlmModelEnum $llmModel,
+        public string $modelName,
         /**
          * @var Collection<MessageDto>
          */
+        public string $provider,
         public Collection $messages,
         public ?string $systemPrompt = null,
         public int $maxTokens = 4000,
@@ -71,7 +69,7 @@ class ChatWithLlm
             $md5HashOfPrompt = Helper::llmUsageHash(
                 $this->systemPrompt,
                 $this->messages->toArray(),
-                $this->llmModel
+                $this->modelName
             );
 
             $llmUsage = LlmUsage::query()->where('prompt_md5', $md5HashOfPrompt)->first();
@@ -110,35 +108,31 @@ class ChatWithLlm
         return $this;
     }
 
-    public function getStrategy(): ChatStrategyInterface
+    public function getStrategy(): ChatProvider
     {
-        return match ($this->llmModel->llmFamilyName()) {
-            LlmProvider::ANTHROPIC => new Anthropic(
-                llmModel: $this->llmModel,
+        // dd($this->provider, OpenAI::class);
+        // dd(get_class($this->provider));
+        return match ($this->provider) {
+            Anthropic::class => new Anthropic(
+                modelName: $this->modelName,
                 messages: $this->messages,
                 systemPrompt: $this->systemPrompt,
                 maxTokens: $this->maxTokens
             ),
-            LlmProvider::OPEN_AI => new OpenAI(
-                llmModel: $this->llmModel,
+            OpenAI::class => new OpenAI(
+                modelName: $this->modelName,
                 messages: $this->messages,
                 systemPrompt: $this->systemPrompt,
                 maxTokens: $this->maxTokens
             ),
-            LlmProvider::DEEPSEEK => new Deepseek(
-                llmModel: $this->llmModel,
+            Deepseek::class => new Deepseek(
+                modelName: $this->modelName,
                 messages: $this->messages,
                 systemPrompt: $this->systemPrompt,
                 maxTokens: $this->maxTokens
             ),
-            // LlmProvider::META => new Meta(
-            //     llmModel: $this->llmModel,
-            //     messages: $this->messages,
-            //     systemPrompt: $this->systemPrompt,
-            //     maxTokens: $this->maxTokens
-            // ),
-            LlmProvider::GOOGLE => new Google(
-                llmModel: $this->llmModel,
+            Google::class => new Google(
+                modelName: $this->modelName,
                 messages: $this->messages,
                 systemPrompt: $this->systemPrompt,
                 maxTokens: $this->maxTokens,
@@ -157,7 +151,7 @@ class ChatWithLlm
                 'input_tokens' => $this->llmResponse->tokenUsage['inputTokens'],
                 'output_tokens' => $this->llmResponse->tokenUsage['outputTokens'],
                 'time_taken_ms' => $this->timeTakenInMs,
-                'model_name' => $this->llmModel->value,
+                'model_name' => $this->modelName,
                 'blade_template_name' => null,
                 'responseable_id' => $this->responseable instanceof Model ? $this->responseable->getKey() : null,
                 'responseable_type' => $this->responseable instanceof Model ? get_class($this->responseable) : null,

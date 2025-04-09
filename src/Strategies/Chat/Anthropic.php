@@ -5,16 +5,15 @@ declare(strict_types=1);
 namespace Prajwal89\Llm\Strategies\Chat;
 
 use Illuminate\Support\Collection;
-use Prajwal89\Llm\Concerns\ChatStrategyInterface;
+use Prajwal89\Llm\Concerns\ChatProvider;
 use Prajwal89\Llm\Dtos\LlmResponseDto;
 use Prajwal89\Llm\Dtos\MessageDto;
-use Prajwal89\Llm\Enums\LlmModelEnum;
 use Prajwal89\Llm\HttpClients\AnthropicClient;
 
-class Anthropic implements ChatStrategyInterface
+class Anthropic implements ChatProvider
 {
     public function __construct(
-        public LlmModelEnum $llmModel,
+        public string $modelName,
         /**
          * @var Collection<MessageDto>
          */
@@ -34,7 +33,7 @@ class Anthropic implements ChatStrategyInterface
 
         $response = AnthropicClient::make()
             ->post('/messages', [
-                'model' => $this->llmModel->value,
+                'model' => $this->modelName,
                 'stream' => false,
                 'max_tokens' => $this->maxTokens,
                 ...$systemPrompt,

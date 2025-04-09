@@ -5,16 +5,15 @@ declare(strict_types=1);
 namespace Prajwal89\Llm\Strategies\Chat;
 
 use Illuminate\Support\Collection;
-use Prajwal89\Llm\Concerns\ChatStrategyInterface;
+use Prajwal89\Llm\Concerns\ChatProvider;
 use Prajwal89\Llm\Dtos\LlmResponseDto;
 use Prajwal89\Llm\Dtos\MessageDto;
-use Prajwal89\Llm\Enums\LlmModelEnum;
 use Prajwal89\Llm\HttpClients\GoogleClient;
 
-class Google implements ChatStrategyInterface
+class Google implements ChatProvider
 {
     public function __construct(
-        public LlmModelEnum $llmModel,
+        public string $modelName,
         public ?string $systemPrompt,
         /**
          * @var Collection<MessageDto>
@@ -51,7 +50,7 @@ class Google implements ChatStrategyInterface
         }
 
         $response = GoogleClient::make()
-            ->post("/models/{$this->llmModel->value}:generateContent", [
+            ->post("/models/{$this->modelName}:generateContent", [
                 'contents' => [
                     ...$formattedMessages,
                 ],

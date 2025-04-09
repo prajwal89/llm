@@ -5,16 +5,15 @@ declare(strict_types=1);
 namespace Prajwal89\Llm\Strategies\Chat;
 
 use Illuminate\Support\Collection;
-use Prajwal89\Llm\Concerns\ChatStrategyInterface;
+use Prajwal89\Llm\Concerns\ChatProvider;
 use Prajwal89\Llm\Dtos\LlmResponseDto;
 use Prajwal89\Llm\Dtos\MessageDto;
-use Prajwal89\Llm\Enums\LlmModelEnum;
 use Prajwal89\Llm\HttpClients\OpenAiClient;
 
-class OpenAI implements ChatStrategyInterface
+class OpenAI implements ChatProvider
 {
     public function __construct(
-        public LlmModelEnum $llmModel,
+        public string $modelName,
         public int $maxTokens,
         public ?string $systemPrompt,
         /**
@@ -35,7 +34,7 @@ class OpenAI implements ChatStrategyInterface
 
         $response = OpenAiClient::make()
             ->post('/chat/completions', [
-                'model' => $this->llmModel->value,
+                'model' => $this->modelName,
                 'messages' => $openAiMessages,
                 'max_tokens' => $this->maxTokens,
             ])

@@ -6,14 +6,12 @@ namespace Prajwal89\Llm\Dtos;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Prajwal89\Llm\Enums\BatchRequestStatus;
-use Prajwal89\Llm\Enums\LlmModelEnum;
 
 class BatchRequestResponseDto implements Arrayable
 {
     public function __construct(
         public string $customId,
         public string $responseText,
-        // public LlmModelEnum $model,
         public BatchRequestStatus $status,
         public int $inputTokens,
         public int $outputTokens,

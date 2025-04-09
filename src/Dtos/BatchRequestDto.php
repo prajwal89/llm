@@ -7,13 +7,12 @@ namespace Prajwal89\Llm\Dtos;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
-use Prajwal89\Llm\Enums\LlmModelEnum;
 
 class BatchRequestDto
 {
     public function __construct(
         public string $customId,
-        public LlmModelEnum $llmModel,
+        public string $modelName,
         /**
          * @var Collection<MessageDto>
          */
@@ -34,7 +33,7 @@ class BatchRequestDto
         return [
             'custom_id' => $this->customId,
             'params' => [
-                'model' => $this->llmModel->value,
+                'model' => $this->modelName,
                 'max_tokens' => $this->maxTokens,
                 'system' => $this->systemPrompt,
                 'messages' => $this->messages->map(function (MessageDto $message): array {

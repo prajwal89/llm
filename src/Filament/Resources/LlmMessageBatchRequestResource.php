@@ -19,10 +19,10 @@ use Illuminate\Support\HtmlString;
 use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
 use Prajwal89\Llm\BatchLlmRequests;
 use Prajwal89\Llm\Enums\BatchRequestStatus;
-use Prajwal89\Llm\Enums\LlmModelEnum;
 use Prajwal89\Llm\Filament\Resources\LlmMessageBatchRequestResource\Pages;
 use Prajwal89\Llm\Filament\Resources\LlmMessageBatchRequestResource\Pages\ListLlmMessageBatchRequests;
 use Prajwal89\Llm\Filament\Resources\LlmMessageBatchRequestResource\Widgets\LlmMessageBatchRequestTrendChart;
+use Prajwal89\Llm\Models\LlmMessageBatch;
 use Prajwal89\Llm\Models\LlmMessageBatchRequest;
 
 class LlmMessageBatchRequestResource extends Resource
@@ -94,8 +94,16 @@ class LlmMessageBatchRequestResource extends Resource
             SelectFilter::make('status')
                 ->options(BatchRequestStatus::class),
             // ->default(BatchRequestStatus::PROCESSING->value)
+
             SelectFilter::make('model_name')
-                ->options(LlmModelEnum::class),
+                ->options(function () {
+                    return LlmMessageBatch::query()
+                        ->distinct('model_name')
+                        ->get()
+                        ->mapWithKeys(function ($model_name) {
+                            return [$model_name => $model_name];
+                        });
+                }),
 
             DateRangeFilter::make('created_at'),
 

@@ -7,7 +7,6 @@ namespace Prajwal89\Llm\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Prajwal89\Llm\Enums\LlmModelEnum;
 use Prajwal89\Llm\Helpers\Helper;
 
 class LlmUsage extends Model
@@ -36,9 +35,6 @@ class LlmUsage extends Model
             'output_tokens' => 'integer',
             'time_taken_ms' => 'integer',
             'is_from_message_batch' => 'boolean',
-            // ! we are not casting this b.c of this will fail usage table if deleted models have
-            // usage record
-            // 'model_name' => LlmModelEnum::class,
         ];
     }
 
@@ -58,8 +54,7 @@ class LlmUsage extends Model
         return Helper::llmUsageHash(
             $this->system_prompt,
             json_decode($this->user_prompt, true),
-            // $this->model_name,
-            LlmModelEnum::from($this->model_name),
+            $this->model_name,
         );
     }
 }
