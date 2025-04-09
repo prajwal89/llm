@@ -16,7 +16,6 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\HtmlString;
 use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
-use Prajwal89\Llm\Enums\LlmModelEnum;
 use Prajwal89\Llm\Filament\Resources\LlmUsageResource\Pages;
 use Prajwal89\Llm\Filament\Resources\LlmUsageResource\Pages\ListLlmUsages;
 use Prajwal89\Llm\Filament\Resources\LlmUsageResource\Widgets\LlmUsageCostTable;
@@ -71,7 +70,14 @@ class LlmUsageResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('model_name')
-                    ->options(LlmModelEnum::class),
+                    ->options(function () {
+                        return LlmUsage::query()
+                            ->distinct('model_name')
+                            ->pluck('model_name')
+                            ->mapWithKeys(function ($model_name) {
+                                return [$model_name => $model_name];
+                            });
+                    }),
                 DateRangeFilter::make('created_at'),
             ])
             ->actions([

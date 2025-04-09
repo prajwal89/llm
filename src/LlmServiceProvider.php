@@ -12,6 +12,8 @@ class LlmServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->mergeConfigFrom(__DIR__ . '/../config/llm.php', 'llm');
+
         if ($this->app->runningInConsole()) {
             $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         }

@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace Prajwal89\Llm\Strategies\Chat;
 
 use Illuminate\Support\Facades\Http;
-use Prajwal89\Llm\Concerns\ChatStrategyInterface;
+use Prajwal89\Llm\Concerns\ChatProvider;
 use Prajwal89\Llm\Dtos\LlmResponseDto;
-use Prajwal89\Llm\Enums\LlmModelEnum;
 
-class Meta implements ChatStrategyInterface
+class Meta implements ChatProvider
 {
     public function __construct(
-        public LlmModelEnum $llmModel,
+        public string $modelName,
         public int $maxTokens,
         public ?string $systemPrompt,
         public array $messages
@@ -25,7 +24,7 @@ class Meta implements ChatStrategyInterface
     {
         $response = Http::timeout(300)
             ->post(config('services.ollama.endpoint') . '/chat', [
-                'model' => $this->llmModel->value,
+                'model' => $this->modelName,
                 'stream' => false,
                 'keep_alive' => 120,
                 'messages' => [

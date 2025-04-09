@@ -13,7 +13,6 @@ use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Number;
 use Malzariey\FilamentDaterangepickerFilter\Filters\DateRangeFilter;
-use Prajwal89\Llm\Enums\LlmModelEnum;
 use Prajwal89\Llm\Models\LlmUsage;
 
 // todo consider is_from_message_batch for calculating llm cost
@@ -28,6 +27,7 @@ class LlmUsageCostTable extends BaseWidget
                 function () {
                     return LlmUsage::query()
                         ->select(
+                            'id',
                             'model_name',
                             DB::raw('SUM(input_tokens) as total_input_tokens'),
                             DB::raw('SUM(output_tokens) as total_output_tokens')
@@ -48,13 +48,10 @@ class LlmUsageCostTable extends BaseWidget
                 TextColumn::make('input_cost')
                     ->label('Input cost')
                     ->getStateUsing(function ($record) {
-                        $llmModel = LlmModelEnum::tryFrom($record->model_name);
+                        $costPerToken = config('llm.pricing' . $record->model_name . '.input');
+                        // dd($costPerToken);
 
-                        if (!$llmModel instanceof LlmModelEnum) {
-                            return Number::currency(0);
-                        }
-
-                        return Number::currency((int) $record->total_input_tokens * $llmModel->costPerInputToken());
+                        return Number::currency((int) $record->total_input_tokens * $costPerToken);
                     })
                     ->summarize(Summarizer::make('SUM')
                         ->label('Sum')->using(function ($table) {
@@ -63,13 +60,9 @@ class LlmUsageCostTable extends BaseWidget
 
                             // Summarize dynamic columns
                             $totalInputCost = $records->sum(function ($record): int|float {
-                                $llmModel = LlmModelEnum::tryFrom($record->model_name);
+                                $costPerToken = config('llm.pricing' . $record->model_name . '.input');
 
-                                if (!$llmModel instanceof LlmModelEnum) {
-                                    return 0;
-                                }
-
-                                return $record->total_input_tokens * $llmModel->costPerInputToken();
+                                return $record->total_input_tokens * $costPerToken;
                             });
 
                             return Number::currency($totalInputCost);
@@ -77,13 +70,9 @@ class LlmUsageCostTable extends BaseWidget
                 TextColumn::make('output_cost')
                     ->label('Output cost')
                     ->getStateUsing(function ($record) {
-                        $llmModel = LlmModelEnum::tryFrom($record->model_name);
+                        $costPerToken = config('llm.pricing' . $record->model_name . '.input');
 
-                        if (!$llmModel instanceof LlmModelEnum) {
-                            return Number::currency(0);
-                        }
-
-                        return Number::currency((int) $record->total_output_tokens * $llmModel->costPerOutputToken());
+                        return Number::currency((int) $record->total_output_tokens * $costPerToken);
                     })
                     ->summarize(Summarizer::make('SUM')
                         ->label('Sum')->using(function ($table) {
@@ -91,13 +80,9 @@ class LlmUsageCostTable extends BaseWidget
                             $records = $table->getRecords();
 
                             $totalOutputCost = $records->sum(function ($record): int|float {
-                                $llmModel = LlmModelEnum::tryFrom($record->model_name);
+                                $costPerToken = config('llm.pricing' . $record->model_name . '.input');
 
-                                if (!$llmModel instanceof LlmModelEnum) {
-                                    return 0;
-                                }
-
-                                return $record->total_output_tokens * $llmModel->costPerOutputToken();
+                                return $record->total_output_tokens * $costPerToken;
                             });
 
                             return Number::currency((int) $totalOutputCost);
@@ -105,7 +90,14 @@ class LlmUsageCostTable extends BaseWidget
             ])
             ->filters([
                 SelectFilter::make('model_name')
-                    ->options(LlmModelEnum::class),
+                    ->options(function () {
+                        return LlmUsage::query()
+                            ->distinct('model_name')
+                            ->pluck('model_name')
+                            ->mapWithKeys(function ($model_name) {
+                                return [$model_name => $model_name];
+                            });
+                    }),
                 DateRangeFilter::make('created_at'),
             ])
             ->defaultSort('total_input_tokens', 'desc');

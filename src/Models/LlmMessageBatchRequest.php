@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Prajwal89\Llm\Enums\BatchRequestStatus;
-use Prajwal89\Llm\Enums\LlmModelEnum;
 
 class LlmMessageBatchRequest extends Model
 {
@@ -51,7 +50,6 @@ class LlmMessageBatchRequest extends Model
     {
         return [
             'status' => BatchRequestStatus::class,
-            'model_name' => LlmModelEnum::class,
             'input_tokens' => 'integer',
             'output_tokens' => 'integer',
         ];
