@@ -1,5 +1,7 @@
 # LLM Module
 
+**This project is WIP DO not you this in your app** 
+
 ## Installation
 
 
@@ -12,7 +14,7 @@
 
 ## Usage
 
-- schedule this job (every 5 min) if you are using llm batch requests "Prajwal89\Llm\Jobs\UpdateBatchAndRequestStatusesJob"  
+- schedule this job (every 5 min) if you are using llm batch requests `Prajwal89\Llm\Jobs\UpdateBatchAndRequestStatusesJob`  
 
 ## Instructions for adding new model
 

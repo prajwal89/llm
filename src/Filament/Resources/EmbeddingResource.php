@@ -54,7 +54,7 @@ class EmbeddingResource extends Resource
                     ->options(function () {
                         return Embedding::query()
                             ->distinct('use_case')
-                            ->get()
+                            ->pluck('use_case')
                             ->mapWithKeys(function ($use_case) {
                                 return [$use_case => $use_case];
                             });
