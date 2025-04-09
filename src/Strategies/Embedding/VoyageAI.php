@@ -6,12 +6,11 @@ namespace Prajwal89\Llm\Strategies\Embedding;
 
 use Illuminate\Support\Facades\Http;
 use Prajwal89\Llm\Dtos\EmbeddingResponseDto;
-use Prajwal89\Llm\Enums\EmbeddingModelEnum;
 
 class VoyageAI
 {
     public function __construct(
-        public EmbeddingModelEnum $embeddingModel,
+        public string $modelName,
         public string $input,
         public array $additionalParams = []
     ) {}
@@ -24,7 +23,7 @@ class VoyageAI
             ->withHeader('content-type', 'application/json')
             ->post(config('services.voyage_ai.endpoint'), [
                 'input' => $this->input,
-                'model' => $this->embeddingModel->value,
+                'model' => $this->modelName,
                 ...$this->additionalParams,
                 // https://docs.voyageai.com/docs/embeddings#python-api
                 // 'input_type' => "document"

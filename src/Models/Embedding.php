@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Modules\Qdrant\Enums\EmbeddingUseCase;
 
 class Embedding extends Model
 {
@@ -29,7 +28,6 @@ class Embedding extends Model
     protected function casts(): array
     {
         return [
-            'use_case' => EmbeddingUseCase::class,
             'vectors' => 'array',
             'input_text_md5' => 'string',
         ];
@@ -40,10 +38,9 @@ class Embedding extends Model
         return $this->morphTo();
     }
 
-    public function prunable(): Builder
-    {
-        return static::query()
-            ->where('created_at', '<=', now()->subMonths(1))
-            ->where('use_case', EmbeddingUseCase::SEARCH);
-    }
+    // public function prunable(): Builder
+    // {
+    //     return static::query()
+    //         ->where('created_at', '<=', now()->subMonths(1));
+    // }
 }
