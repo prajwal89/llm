@@ -19,7 +19,7 @@ class Anthropic implements ChatProvider
          */
         public Collection $messages,
         public ?string $systemPrompt = null,
-        public int $maxTokens = 4000,
+        public ?int $maxTokens = 4000,
         // todo support for extra options
     ) {}
 
@@ -35,7 +35,7 @@ class Anthropic implements ChatProvider
             ->post('/messages', [
                 'model' => $this->modelName,
                 'stream' => false,
-                'max_tokens' => $this->maxTokens,
+                ...$this->maxTokens ? ['max_tokens' => $this->maxTokens] : [],
                 ...$systemPrompt,
                 'messages' => $this->messages->map(function (MessageDto $message): array {
                     return $message->toAnthropic();

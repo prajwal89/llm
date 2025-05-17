@@ -19,7 +19,7 @@ class Google implements ChatProvider
          * @var Collection<MessageDto>
          */
         public Collection $messages,
-        public int $maxTokens,
+        public ?int $maxTokens,
         public array $additionalParams,
     ) {}
 

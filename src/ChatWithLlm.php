@@ -46,7 +46,7 @@ class ChatWithLlm
         public string $provider,
         public Collection $messages,
         public ?string $systemPrompt = null,
-        public int $maxTokens = 4000,
+        public ?int $maxTokens = null,
         public ?Model $responseable = null,
         // this will check if output has valid json and replaces text with valid json string
         public bool $strictJsonOutput = false,
@@ -56,7 +56,7 @@ class ChatWithLlm
     ) {
         $this->logger = Logger::chat();
 
-        if (!$messages->every(fn ($item): bool => $item instanceof MessageDto)) {
+        if (!$messages->every(fn($item): bool => $item instanceof MessageDto)) {
             throw new InvalidArgumentException('All items in the messages must be instances of MessageDto.');
         }
     }

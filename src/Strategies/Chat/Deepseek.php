@@ -14,7 +14,7 @@ class Deepseek implements ChatProvider
 {
     public function __construct(
         public string $modelName,
-        public int $maxTokens,
+        public ?int $maxTokens,
         public ?string $systemPrompt,
         /**
          * @var Collection<MessageDto>
@@ -35,13 +35,13 @@ class Deepseek implements ChatProvider
         $response = DeepseekClient::make()
             ->post('/chat/completions', [
                 'model' => $this->modelName,
+                ...$this->maxTokens ? ['max_tokens' => $this->maxTokens] : [],
                 'messages' => [
                     ...$systemPrompt,
                     ...$this->messages->map(function (MessageDto $message): array {
                         return $message->toAnthropic();
                     })->toArray(),
                 ],
-                'max_tokens' => $this->maxTokens,
             ])
             ->throw();
 

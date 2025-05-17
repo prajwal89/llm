@@ -14,7 +14,7 @@ class OpenAI implements ChatProvider
 {
     public function __construct(
         public string $modelName,
-        public int $maxTokens,
+        public ?int $maxTokens,
         public ?string $systemPrompt,
         /**
          * @var Collection<MessageDto>
@@ -36,7 +36,7 @@ class OpenAI implements ChatProvider
             ->post('/chat/completions', [
                 'model' => $this->modelName,
                 'messages' => $openAiMessages,
-                'max_tokens' => $this->maxTokens,
+                ...$this->maxTokens ? ['max_tokens' => $this->maxTokens] : [],
             ])
             ->throw();
 
