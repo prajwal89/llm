@@ -20,7 +20,7 @@ class Google implements ChatProvider
          */
         public Collection $messages,
         public ?int $maxTokens,
-        public array $additionalParams,
+        public array $additionalParams = [],
     ) {}
 
     public function makeRequest(): LlmResponseDto

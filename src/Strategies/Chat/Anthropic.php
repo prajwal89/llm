@@ -20,7 +20,7 @@ class Anthropic implements ChatProvider
         public Collection $messages,
         public ?string $systemPrompt = null,
         public ?int $maxTokens = 4000,
-        // todo support for extra options
+        public array $additionalParams = [],
     ) {}
 
     public function makeRequest(): LlmResponseDto
@@ -40,6 +40,7 @@ class Anthropic implements ChatProvider
                 'messages' => $this->messages->map(function (MessageDto $message): array {
                     return $message->toAnthropic();
                 })->toArray(),
+                ...$this->additionalParams
             ])
             ->throw();
 

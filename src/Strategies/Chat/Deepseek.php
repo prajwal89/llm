@@ -20,6 +20,7 @@ class Deepseek implements ChatProvider
          * @var Collection<MessageDto>
          */
         public Collection $messages,
+        public array $additionalParams = [],
     ) {}
 
     public function makeRequest(): LlmResponseDto
@@ -42,6 +43,7 @@ class Deepseek implements ChatProvider
                         return $message->toAnthropic();
                     })->toArray(),
                 ],
+                ...$this->additionalParams
             ])
             ->throw();
 

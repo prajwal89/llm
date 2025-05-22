@@ -14,7 +14,8 @@ class Meta implements ChatProvider
         public string $modelName,
         public int $maxTokens,
         public ?string $systemPrompt,
-        public array $messages
+        public array $messages,
+        public array $additionalParams = [],
     ) {}
 
     // todo max tokens support
@@ -34,6 +35,7 @@ class Meta implements ChatProvider
                     ],
                     ...$this->messages,
                 ],
+                ...$this->additionalParams
             ]);
 
         // dd($response->json());

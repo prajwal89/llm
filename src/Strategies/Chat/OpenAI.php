@@ -20,6 +20,7 @@ class OpenAI implements ChatProvider
          * @var Collection<MessageDto>
          */
         public Collection $messages,
+        public array $additionalParams = [],
     ) {}
 
     public function makeRequest(): LlmResponseDto
@@ -37,6 +38,7 @@ class OpenAI implements ChatProvider
                 'model' => $this->modelName,
                 'messages' => $openAiMessages,
                 ...$this->maxTokens ? ['max_tokens' => $this->maxTokens] : [],
+                ...$this->additionalParams
             ])
             ->throw();
 

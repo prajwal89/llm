@@ -117,19 +117,22 @@ class ChatWithLlm
                 modelName: $this->modelName,
                 messages: $this->messages,
                 systemPrompt: $this->systemPrompt,
-                maxTokens: $this->maxTokens
+                maxTokens: $this->maxTokens,
+                additionalParams: $this->additionalParams
             ),
             OpenAI::class => new OpenAI(
                 modelName: $this->modelName,
                 messages: $this->messages,
                 systemPrompt: $this->systemPrompt,
-                maxTokens: $this->maxTokens
+                maxTokens: $this->maxTokens,
+                additionalParams: $this->additionalParams
             ),
             Deepseek::class => new Deepseek(
                 modelName: $this->modelName,
                 messages: $this->messages,
                 systemPrompt: $this->systemPrompt,
-                maxTokens: $this->maxTokens
+                maxTokens: $this->maxTokens,
+                additionalParams: $this->additionalParams
             ),
             Google::class => new Google(
                 modelName: $this->modelName,
