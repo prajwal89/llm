@@ -43,7 +43,7 @@ class Deepseek implements ChatProvider
                         return $message->toAnthropic();
                     })->toArray(),
                 ],
-                ...$this->additionalParams
+                ...$this->additionalParams,
             ])
             ->throw();
 

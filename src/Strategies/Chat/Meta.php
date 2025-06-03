@@ -35,7 +35,7 @@ class Meta implements ChatProvider
                     ],
                     ...$this->messages,
                 ],
-                ...$this->additionalParams
+                ...$this->additionalParams,
             ]);
 
         // dd($response->json());

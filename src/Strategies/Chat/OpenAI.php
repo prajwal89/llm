@@ -38,7 +38,7 @@ class OpenAI implements ChatProvider
                 'model' => $this->modelName,
                 'messages' => $openAiMessages,
                 ...$this->maxTokens ? ['max_tokens' => $this->maxTokens] : [],
-                ...$this->additionalParams
+                ...$this->additionalParams,
             ])
             ->throw();
 

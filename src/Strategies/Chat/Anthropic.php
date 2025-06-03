@@ -40,7 +40,7 @@ class Anthropic implements ChatProvider
                 'messages' => $this->messages->map(function (MessageDto $message): array {
                     return $message->toAnthropic();
                 })->toArray(),
-                ...$this->additionalParams
+                ...$this->additionalParams,
             ])
             ->throw();
 
