@@ -48,7 +48,7 @@ class LlmUsageCostTable extends BaseWidget
                 TextColumn::make('input_cost')
                     ->label('Input cost')
                     ->getStateUsing(function ($record) {
-                        $costPerToken = config('llm.pricing' . $record->model_name . '.input');
+                        $costPerToken = config('llm.pricing.' . $record->model_name . '.input');
                         // dd($costPerToken);
 
                         return Number::currency((int) $record->total_input_tokens * $costPerToken);
@@ -60,7 +60,7 @@ class LlmUsageCostTable extends BaseWidget
 
                             // Summarize dynamic columns
                             $totalInputCost = $records->sum(function ($record): int|float {
-                                $costPerToken = config('llm.pricing' . $record->model_name . '.input');
+                                $costPerToken = config('llm.pricing.' . $record->model_name . '.input');
 
                                 return $record->total_input_tokens * $costPerToken;
                             });
@@ -70,7 +70,7 @@ class LlmUsageCostTable extends BaseWidget
                 TextColumn::make('output_cost')
                     ->label('Output cost')
                     ->getStateUsing(function ($record) {
-                        $costPerToken = config('llm.pricing' . $record->model_name . '.input');
+                        $costPerToken = config('llm.pricing.' . $record->model_name . '.input');
 
                         return Number::currency((int) $record->total_output_tokens * $costPerToken);
                     })
@@ -80,7 +80,7 @@ class LlmUsageCostTable extends BaseWidget
                             $records = $table->getRecords();
 
                             $totalOutputCost = $records->sum(function ($record): int|float {
-                                $costPerToken = config('llm.pricing' . $record->model_name . '.input');
+                                $costPerToken = config('llm.pricing.' . $record->model_name . '.input');
 
                                 return $record->total_output_tokens * $costPerToken;
                             });
