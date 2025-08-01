@@ -1,8 +1,11 @@
 # LLM Module
 
-**This project is WIP DO not you this in your app** 
+**This project is WIP DO not you this in your app**
 
 ## Installation
+
+composer require prajwal89/llm
+php artisan vendor:publish --tag=llm-config
 
 
 - Add records to env

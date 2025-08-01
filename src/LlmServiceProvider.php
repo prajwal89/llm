@@ -16,6 +16,10 @@ class LlmServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+
+            $this->publishes([
+                __DIR__ . '/../config/llm.php' => config_path('llm.php'),
+            ], 'llm-config');
         }
     }
 }
